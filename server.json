@@ -1,5 +1,5 @@
 {
-  "responeslist": [
+  "responselist": [
       {
           "path": "/api/list1",
           "response": {
@@ -14,9 +14,9 @@
       {
         "path": "/api/list2",
         "response": {
-            "code": "400",
-            "msg": "unknown Error",
-            "data": {
+            "status": "400",
+            "mssage": "unknown Error",
+            "res": {
               "key1": false,
               "key2": null
             }

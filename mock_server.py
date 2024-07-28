@@ -464,9 +464,9 @@ class RequestHandler(HTTPRequestHandler):
         # 根据 path 对应到具体的get处理方法
         if self.path == '/':
             self.handle_index()
-        elif any(path_info['path'] == self.path for path_info in mock_res['responeslist']):
+        elif any(path_info['path'] == self.path for path_info in mock_res['responselist']):
             # 使用字典推导式直接获取对应的res值
-            res = next((item["response"] for item in mock_res["responeslist"] if item["path"] == self.path), None)
+            res = next((item["response"] for item in mock_res["responselist"] if item["path"] == self.path), None)
             self.handle_customer(json.dumps(res))
         # elif self.path.startswith('/favicon'):
         #     self.handle_favicon()
@@ -475,9 +475,9 @@ class RequestHandler(HTTPRequestHandler):
 
     def do_post(self):
       #  处理具体的post请求
-      if any(path_info['path'] == self.path for path_info in mock_res['responeslist']):
+      if any(path_info['path'] == self.path for path_info in mock_res['responselist']):
         # 使用字典推导式直接获取对应的res值
-        res = next((item["response"] for item in mock_res["responeslist"] if item["path"] == self.path), None)
+        res = next((item["response"] for item in mock_res["responselist"] if item["path"] == self.path), None)
         self.handle_customer(json.dumps(res))
       else:
         self.send_error(404)
