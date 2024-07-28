@@ -1,0 +1,26 @@
+{
+  "responeslist": [
+      {
+          "path": "/api/list1",
+          "response": {
+              "code": "200",
+              "msg": "Success",
+              "data": {
+                "key1": "value1",
+                "key2": "value2"
+              }
+          }
+      },
+      {
+        "path": "/api/list2",
+        "response": {
+            "code": "400",
+            "msg": "unknown Error",
+            "data": {
+              "key1": false,
+              "key2": null
+            }
+        }
+    }
+  ]
+}
