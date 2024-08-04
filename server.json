@@ -1,15 +1,25 @@
 {
   "responselist": [
       {
-          "path": "/api/list1",
+          "path": "/",
           "response": {
               "code": "200",
               "msg": "Success",
               "data": {
-                "key1": "value1",
-                "key2": "value2"
+                "key1": "欢迎使用mock_server,使用方法见 https://github.com/old-eight800/Mocker-api"
               }
           }
+      },
+      {
+        "path": "/api/list1",
+        "response": {
+            "code": "200",
+            "msg": "Success",
+            "data": {
+              "key1": "value1",
+              "key2": "value2"
+            }
+        }
       },
       {
         "path": "/api/list2",

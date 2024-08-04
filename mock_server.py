@@ -423,35 +423,6 @@ class HTTPRequestHandler(object):
 
 # 请求具体的处理方式
 class RequestHandler(HTTPRequestHandler):
-    def handle_index(self):
-        page = '''
-        <html>
-        <body>
-        <p>你好, HG Web Server!</p>
-        </body>
-        </html>
-        '''
-        self.send_response(200)  # status code
-        # 试试删除这行
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(page)))
-        self.end_headers()
-        self.wfile.write(page.encode('utf-8'))
-
-    def handle_favicon(self):
-        page = '''
-        <html>
-        <body>
-        <p>这里还未开发</p>
-        </body>
-        </html>
-        '''
-        self.send_response(200)  # status code
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(page)))
-        self.end_headers()
-        self.wfile.write(page.encode('utf-8'))
-
     def handle_customer(self, res):
         self.send_response(200)  # status code
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -461,15 +432,10 @@ class RequestHandler(HTTPRequestHandler):
 
     # 处理 GET 请求
     def do_get(self):
-        # 根据 path 对应到具体的get处理方法
-        if self.path == '/':
-            self.handle_index()
-        elif any(path_info['path'] == self.path for path_info in mock_res['responselist']):
+        if any(path_info['path'] == self.path for path_info in mock_res['responselist']):
             # 使用字典推导式直接获取对应的res值
             res = next((item["response"] for item in mock_res["responselist"] if item["path"] == self.path), None)
             self.handle_customer(json.dumps(res))
-        # elif self.path.startswith('/favicon'):
-        #     self.handle_favicon()
         else:
             self.send_error(404)
 
@@ -483,7 +449,7 @@ class RequestHandler(HTTPRequestHandler):
         self.send_error(404)
 
 if __name__ == '__main__':
-    with open('./server.json', 'r') as file:
+    with open('./server.json', 'r', encoding='utf8') as file:
       mock_res = json.load(file)
 
     port = 8080
