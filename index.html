@@ -34,13 +34,14 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ json: jsonContent })
+                        body: JSON.stringify(jsonContent)
                     }).then(response => response.json())
                       .then(data => {
-                          if (data.msg==='success') {
-                              alert('JSON saved successfully!');
+                          console.log(data)
+                          if (data.data.msg==='Success') {
+                              alert('更新成功!');
                           } else {
-                              alert('Error saving JSON.');
+                              alert('更新失败');
                           }
                       });
                 } catch (e) {

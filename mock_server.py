@@ -423,6 +423,7 @@ class HTTPRequestHandler(object):
 
 # 请求具体的处理方式
 class RequestHandler(HTTPRequestHandler):
+    
     def handle_customer(self, res):
         self.send_response(200)  # status code
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -431,43 +432,54 @@ class RequestHandler(HTTPRequestHandler):
         self.end_headers()
         self.wfile.write(res.encode('utf-8'))
 
-    # 处理 GET 请求
+    def load_mock_responses(self):
+        with open('./server.json', 'r', encoding='utf8') as file:
+            return json.load(file)
+
+    def find_response(self, path, mock_res):
+        return next((item["response"] for item in mock_res["responselist"] if item["path"] == path), None)
+    
     def do_get(self):
-        if any(path_info['path'] == self.path for path_info in mock_res['responselist']):
-            # 使用字典推导式直接获取对应的res值
-            res = next((item["response"] for item in mock_res["responselist"] if item["path"] == self.path), None)
-            self.handle_customer(json.dumps(res))
-        elif self.path == '/load-jsonFile':
-            return self.handle_customer(json.dumps(mock_res))
+        mock_res = self.load_mock_responses()
+        if self.path == '/load-jsonFile':
+            self.handle_customer(json.dumps(mock_res))
         else:
-            self.send_error(404)
+            res = self.find_response(self.path, mock_res)
+            if res is not None:
+                self.handle_customer(json.dumps(res))
+            else:
+                self.send_error(404)
 
-    #  处理具体的post请求
     def do_post(self):
-      if any(path_info['path'] == self.path for path_info in mock_res['responselist']):
-        # 使用字典推导式直接获取对应的res值
-        res = next((item["response"] for item in mock_res["responselist"] if item["path"] == self.path), None)
-        self.handle_customer(json.dumps(res))
-      elif self.path == '/save-jsonFile':
-        print(self.requestline)
-        res1 = self.handle_customer(json.dumps(self.request))
-        print(res1)
-        with open('./server1.json', 'w', encoding='utf8') as file:
-          file.write(res1)
-        res2 = {
-            "data": {
-              "msg": "success"
+        mock_res = self.load_mock_responses()
+        if self.path == '/save-jsonFile':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            res1 = json.loads(json.loads(post_data))
+            with open('./server.json', 'w', encoding='utf-8') as file:
+                json.dump(res1, file, ensure_ascii=False, indent=4)
+            res2 = {
+                "data": {
+                  "msg": "Success"
+                }
             }
-        }
-        self.handle_customer(json.dumps(res2))
+            self.handle_customer(json.dumps(res2))
+        else:
+            res = self.find_response(self.path, mock_res)
+            if res is not None:
+                self.handle_customer(json.dumps(res))
+            else:
+                self.send_error(404)
 
-      else:
-        self.send_error(404)
+    def do_options(self):
+        if self.path == "/save-jsonFile":
+          self.send_response(204)  # status code
+          self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+          self.send_header("Access-Control-Allow-Origin", "*")
+          self.send_header("Access-Control-Allow-Headers", "Content-Type")
+          self.end_headers()
 
 if __name__ == '__main__':
-    with open('./server.json', 'r', encoding='utf8') as file:
-      mock_res = json.load(file)
-
     port = 3002
     server = HTTPServer(('', port), RequestHandler)
     # 启动服务
