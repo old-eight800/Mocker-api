@@ -454,6 +454,7 @@ class RequestHandler(HTTPRequestHandler):
         mock_res = self.load_mock_responses()
         if self.path == '/save-jsonFile':
             content_length = int(self.headers['Content-Length'])
+
             post_data = self.rfile.read(content_length)
             res1 = json.loads(json.loads(post_data))
             with open('./server.json', 'w', encoding='utf-8') as file:

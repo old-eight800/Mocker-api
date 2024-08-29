@@ -36,12 +36,16 @@ Mocker-api是一款基于python开发的mock后台api的服务,支持自定义�
 
 
 ### 🔛 使用
-服务启动成功后，在浏览器中访问 http://localhost:8080 使用应用。
+服务启动成功后，在浏览器中访问 http://localhost:3002 使用应用。
+首页可在线修改接口返回的参数,无需重启服务器
 
 
 ## 👀 演示图
 
 <table>
+    <tr>
+        <td><img src="pic/index.jpg"/></td>
+    </tr>
     <tr>
         <td><img src="pic/error.png"/></td>
     </tr>
