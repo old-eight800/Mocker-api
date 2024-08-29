@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Editor</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">JSON Editor</h1>
+        <div class="form-group">
+            <label for="jsonTextarea">Edit JSON:</label>
+            <textarea class="form-control" id="jsonTextarea" rows="20"></textarea>
+        </div>
+        <button class="btn btn-primary" id="saveButton">Save</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Load JSON file content
+            fetch('http://127.0.0.1:3002/load-jsonFile')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('jsonTextarea').value = JSON.stringify(data, null, 2);
+                });
+
+            document.getElementById('saveButton').addEventListener('click', () => {
+                const jsonContent = document.getElementById('jsonTextarea').value;
+                try {
+                    JSON.parse(jsonContent); // Validate JSON
+                    fetch('http://127.0.0.1:3002/save-jsonFile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ json: jsonContent })
+                    }).then(response => response.json())
+                      .then(data => {
+                          if (data.msg==='success') {
+                              alert('JSON saved successfully!');
+                          } else {
+                              alert('Error saving JSON.');
+                          }
+                      });
+                } catch (e) {
+                    alert('Json格式错误,请检查.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

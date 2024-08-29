@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - '80:80'
+    environment:
+      TZ: Asia/Shanghai
+    expose:
+      - '80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d
+    networks:
+      network:
+        ipv4_address: 177.8.0.12
+
+  mocker-api:
+    container_name: mocker-api
+    image: mocker-api:latest
+    build:
+      context: .             #表示dockerfile文件存在的目录
+      dockerfile: /home/ubuntu/app/Mocker-api/Dockerfile    #表示dockerfile的文件名
+    command: python mock_server.py
+    ports:
+      - 3002:3002
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /home/ubuntu/app/Mocker-api/:/app
+    expose:
+      - "3002"
+    networks:
+      network:
+        ipv4_address: 177.8.0.13
+
+networks:
+  network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '177.8.0.0/16'
